@@ -1,6 +1,6 @@
 (ns rn-examples.events
   (:require
-   [re-frame.core :refer [reg-event-db after]]
+   [re-frame.core :refer [reg-event-db reg-event-fx after]]
    [clojure.spec.alpha :as s]
    [rn-examples.db :as db :refer [app-db]]))
 
