@@ -1,0 +1,30 @@
+{
+  "name": "RnExamples",
+  "interface": "reagent6",
+  "envRoots": {
+    "dev": "env/dev",
+    "prod": "env/prod"
+  },
+  "modules": [],
+  "imageDirs": [
+    "images"
+  ],
+  "platforms": {
+    "ios": {
+      "host": "localhost",
+      "modules": [
+        "react-native",
+        "./images/cljs.png"
+      ]
+    },
+    "android": {
+      "host": "localhost",
+      "modules": [
+        "react-native",
+        "./images/cljs.png",
+        "react-navigation"
+      ]
+    }
+  },
+  "autoRequire": false
+}
