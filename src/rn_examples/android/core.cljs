@@ -162,38 +162,40 @@
   (.registerComponent app-registry "RnExamples" #(r/reactify-component start)))
 
 
+(defn nav-app-root []
+  (nav-app-root {:navigation
+                 (add-navigation-helpers
+                  (clj->js
+                   {"dispatch" #(do
+                                  (js/console.log "EVENT" %)
+                                  (dispatch [:nav/js [% "Index"]]))
+                    "state"    (clj->js @nav-state)}))}))
+
+
+
 (defn alert [title]
       (.alert (.-Alert ReactNative) title))
 
 
-(defn view-pager-example []
-  (let [greeting (subscribe [:get-greeting])]
-    (fn []
-      [view-pager {:style {:flex 1 :width 360 :height 180} :initial-page 0}
-
-       [view {:style {:background-color (random-color) :margin 10 :align-items "center"} :key 1}
-        [text {:style {:font-size 30 :font-weight "100" :margin-bottom 20 :text-align "center"}} @greeting]
-        [image {:source logo-img
-                :style  {:width 80 :height 80 :margin-bottom 30}}]
-        [touchable-highlight {:style {:background-color (random-color) :padding 10 :border-radius 5}
-                              :on-press #(alert "HELLO!")}
-         [text {:style {:color "white" :text-align "center" :font-weight "bold"}} "press me"]]
-        [text "happen"]]
-
-       [view {:style {:background-color (random-color) :padding 20 :align-items "center"  :width 200 :height 80} :key 2}
-        [text {:style {:width 80 :height 80}} "pg1"]
-        [image {:source logo-img
-                :style  {:width 80 :height 80 :margin-bottom 30}}]]
-
-       [view {:style {:background-color (random-color) :padding 20 :align-items "center" :width 80 :height 80} :key 3}
-        [text {:style {:width 80 :height 80}} "pg2"]]])))
 
 
 
 
 
 (defn pager-app-root []
-  (let [greeting (subscribe [:get-greeting])]
+  (let [greeting (subscribe [:get-greeting])
+
+        stack-component-1 [view [text "stack-1"]]
+        stack-c-1 (nav-wrapper stack-component-1 "stk1" )
+
+        stack-component-2 [view [text "stack-2"]]
+        stack-c-2 (nav-wrapper stack-component-2 "stk2" )
+
+        stack-router {:Home {:screen stack-c-1}
+                      :Card {:screen stack-c-2}}
+        sn (r/adapt-react-class (stack-navigator (clj->js stack-router)))
+
+        nav-state (subscribe [:nav/stack-state "Index"])]
     (fn []
       [view-pager {:style {:flex 1 :width 360 :height 180} :initial-page 0}
 
@@ -211,12 +213,54 @@
         [image {:source logo-img
                 :style  {:width 80 :height 80 :margin-bottom 30}}]]
 
-
-
-
        [view {:style {:background-color "#3df" :padding 20 :align-items "center" :width 80 :height 80} :key 3}
 
-        [text {:style {:width 80 :height 80}} "pg2"]]])))
+        [text {:style {:width 80 :height 80}} "pg2"]
+
+        (comment
+          [sn {:navigation (add-navigation-helpers
+                            (clj->js
+                             {"dispatch" #(do
+                                            (js/console.log "EVENT" %)
+                                            (dispatch [:nav/js [% "Index"]]))
+                              "state"    (clj->js @nav-state)}))}])
+        ]])))
+
+(defn stack-app-root []
+  (let [
+        stack-component-1 [view {:title "stk1" :style {:background-color (random-color) :padding 20 :align-items "center"  :width 200 :height 80} :key 1}
+                           [text "stack-1"]]
+        stack-c-1 (nav-wrapper stack-component-1 "stk1" )
+
+        stack-component-2 [view {:title "stk2" :style {:background-color (random-color) :padding 20 :align-items "center"  :width 200 :height 80} :key 2}
+                           [text "stack-2"]]
+        stack-c-2 (nav-wrapper stack-component-2 "stk2" )
+
+        stack-router {:Home {:screen stack-c-1}
+                      :Card {:screen stack-c-2}}
+        sn (r/adapt-react-class (stack-navigator (clj->js stack-router)))
+
+        nav-state (subscribe [:nav/stack-state "Index"])]
+    (fn []
+      [sn {:initialRouteName :Card
+           }]
+
+      ))
+
+
+  (comment
+    :navigation (add-navigation-helpers
+                 (clj->js
+                  {"dispatch" #(do
+                                 (js/console.log "EVENT" %)
+                                 (dispatch [:nav/js [% "Index"]]))
+                   "state"    (clj->js @nav-state)
+
+                   }))))
+
+
+
+
 
 
 
